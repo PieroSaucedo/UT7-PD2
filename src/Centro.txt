@@ -1,0 +1,42 @@
+public Comparable<Double> centroDelGrafo() {
+        Comparable resultado = null;
+        double min = Double.MAX_VALUE;
+        for (Map.Entry<Comparable, Double> entry : obtenerExcentricidades().entrySet()) {
+            if (min > entry.getValue()) {
+                min = entry.getValue();
+                resultado = entry.getKey();
+            }
+        }
+        return resultado;
+    }
+
+
+
+public Comparable<Double> obtenerExcentricidad(Comparable etiquetaVertice) {
+        return obtenerExcentricidades().get(etiquetaVertice);
+    }
+
+
+
+private Map<Comparable, Double> obtenerExcentricidades() {
+        Map<Comparable, Double> resultado = new HashMap<>();
+        Double[][] matrizFloyd = floyd();
+        Comparable[] etiquetas = new Comparable[vertices.size()];
+
+        int i = 0;
+        for (Comparable etiqueta : vertices.keySet()) {
+            etiquetas[i] = etiqueta;
+            i++;
+        }
+
+        for (int columns = 0; columns < vertices.size(); columns++) {
+            double max = 0;
+            for (int rows = 0; rows < vertices.size(); rows++) {
+                if (max < matrizFloyd[rows][columns]) {
+                    max = matrizFloyd[rows][columns];
+                }
+            }
+            resultado.put(etiquetas[columns], max);
+        }
+        return resultado;
+    }
