@@ -197,12 +197,41 @@ public class TGrafoDirigido implements IGrafoDirigido {
 
     @Override
     public boolean[][] warshall() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Double[][] C = UtilGrafos.obtenerMatrizCostos(this.getVertices());
+
+        boolean[][] warshallMatrix = new boolean[C.length][C.length];
+        for (int i = 0; i < warshallMatrix.length; i++) {
+            for (int j = 0; j < warshallMatrix.length; j++) {
+                if (C[i][j] != Double.MAX_VALUE) {
+                    warshallMatrix[i][j] = true;
+                }
+            }
+        }
+
+        for (int k = 0; k < warshallMatrix.length; k++) {
+            for (int i = 0; i < warshallMatrix.length; i++) {
+                if (!warshallMatrix[i][k]) {
+                    continue;
+                }
+                for (int j = 0; j < warshallMatrix.length; j++) {
+                    warshallMatrix[i][j] |= warshallMatrix[i][k] && warshallMatrix[k][j];
+                }
+            }
+        }
+
+        return warshallMatrix;
     }
 
     @Override
     public boolean eliminarVertice(Comparable nombreVertice) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (this.vertices.remove(nombreVertice) == null) {
+            return false;
+        }
+
+        for (TVertice vertice : this.vertices.values()) {
+            vertice.eliminarAdyacencia(nombreVertice);
+        }
+        return true;
     }
 
     /*
